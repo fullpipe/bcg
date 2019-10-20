@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
-import "gopkg.in/gographics/imagick.v3/imagick"
+import (
+	"fmt"
+
+	"gopkg.in/gographics/imagick.v3/imagick"
+)
 
 func main() {
 	fmt.Println("vim-go")
@@ -29,9 +32,9 @@ func main() {
 
 	textHeight := 100
 	for {
-		mw.AnnotateImage(dw, 0, float64(textHeight), 0, "THE ART TEACHER IS FAT, \nNOT PREGNANT")
-		textHeight += 80
-		if textHeight > 480 {
+		mw.AnnotateImage(dw, 0, float64(textHeight), 0, "THE ART TEACHER IS FAT, NOT PREGNANT")
+		textHeight += 50
+		if textHeight > int(h-100) {
 			break
 		}
 	}
@@ -43,7 +46,14 @@ func main() {
 		w, h, w, h - 78,
 		w, 0, w, 116,
 	}, true)
-	mw.WriteImage("out.png")
+
+	cw := imagick.NewMagickWand()
+	cw.ReadImage("Chalk_Gag_Season_1_Epicsode_7_.png")
+	//cw.AddImage(mw)
+	//mw.CompositeImage(cw, imagick.COMPOSITE_OP_OVER, true, 0, 0)
+	cw.CompositeImage(mw, imagick.COMPOSITE_OP_DST_OVER, true, 0, -116)
+
+	cw.WriteImage("out.png")
 	return
 	//	pw := imagick.NewPixelWand()
 	//	pw.SetColor("black")
