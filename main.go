@@ -21,7 +21,7 @@ func main() {
 	h := 690.0
 	mw.NewImage(uint(w), uint(h), pw)
 
-	dw.SetFont("Source Code Pro Light")
+	dw.SetFont("./Pangolin-Regular.ttf")
 	dw.SetFontSize(30)
 	pw.SetColor("white")
 	dw.SetFillColor(pw)
@@ -29,7 +29,8 @@ func main() {
 	dw.SetStrokeColor(pw)
 	dw.SetGravity(imagick.GRAVITY_CENTER)
 	dw.SetGravity(imagick.GRAVITY_NORTH)
-
+	fonts := mw.QueryFonts("*")
+	fmt.Println(fonts)
 	textHeight := 100
 	for {
 		mw.AnnotateImage(dw, 0, float64(textHeight), 0, "THE ART TEACHER IS FAT, NOT PREGNANT")
@@ -38,6 +39,17 @@ func main() {
 			break
 		}
 	}
+
+	ki, err := imagick.NewKernelInfo("Octagon:1")
+	if err != nil {
+		panic(err)
+	}
+	mw.MorphologyImage(imagick.MORPHOLOGY_ERODE_INTENSITY, 1, ki)
+
+	mw.BlurImage(0, 2)
+	mw.SharpenImage(0, 2)
+	mw.SharpenImage(0, 2)
+	mw.SharpenImage(0, 2)
 
 	mw.SetImageVirtualPixelMethod(imagick.VIRTUAL_PIXEL_TRANSPARENT)
 	mw.DistortImage(imagick.DISTORTION_PERSPECTIVE, []float64{
@@ -49,10 +61,12 @@ func main() {
 
 	cw := imagick.NewMagickWand()
 	cw.ReadImage("Chalk_Gag_Season_1_Epicsode_7_.png")
+	cw.SharpenImage(0, 2)
 	//cw.AddImage(mw)
 	//mw.CompositeImage(cw, imagick.COMPOSITE_OP_OVER, true, 0, 0)
 	cw.CompositeImage(mw, imagick.COMPOSITE_OP_DST_OVER, true, 0, -116)
 
+	cw.SetImageCompressionQuality(100)
 	cw.WriteImage("out.png")
 	return
 	//	pw := imagick.NewPixelWand()
