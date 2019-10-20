@@ -14,7 +14,9 @@ func main() {
 	pw := imagick.NewPixelWand()
 	pw.SetColor("black")
 
-	mw.NewImage(640, 480, pw)
+	w := 860.0
+	h := 690.0
+	mw.NewImage(uint(w), uint(h), pw)
 
 	dw.SetFont("Source Code Pro Light")
 	dw.SetFontSize(30)
@@ -25,7 +27,7 @@ func main() {
 	dw.SetGravity(imagick.GRAVITY_CENTER)
 	dw.SetGravity(imagick.GRAVITY_NORTH)
 
-	textHeight := 0
+	textHeight := 100
 	for {
 		mw.AnnotateImage(dw, 0, float64(textHeight), 0, "THE ART TEACHER IS FAT, \nNOT PREGNANT")
 		textHeight += 80
@@ -33,10 +35,14 @@ func main() {
 			break
 		}
 	}
-	mw.AnnotateImage(dw, 0, 0, 0, "THE ART TEACHER IS FAT, \nNOT PREGNANT")
-	mw.AnnotateImage(dw, 0, 80, 0, "THE ART TEACHER IS FAT, \nNOT PREGNANT")
-	//mw.(dw, 0, 0, 0, "THE ART TEACHER IS FAT, NOT PREGNANT")
 
+	mw.SetImageVirtualPixelMethod(imagick.VIRTUAL_PIXEL_TRANSPARENT)
+	mw.DistortImage(imagick.DISTORTION_PERSPECTIVE, []float64{
+		0, 0, 0, 0,
+		0, h, 0, h,
+		w, h, w, h - 78,
+		w, 0, w, 116,
+	}, true)
 	mw.WriteImage("out.png")
 	return
 	//	pw := imagick.NewPixelWand()
